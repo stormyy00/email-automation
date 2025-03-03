@@ -2,16 +2,10 @@ import {
   Team,
   Template,
   createTemplate,
-  removeTemplate,
+  //   removeTemplate,
   templates,
 } from "@/utils/supabase/repository/templateRepository";
 import { NextRequest, NextResponse } from "next/server";
-
-type Params = {
-  params: {
-    team: string;
-  };
-};
 
 export const GET = async () => {
   const templateList = await templates();
@@ -47,6 +41,7 @@ export const POST = async (req: NextRequest) => {
 
 export const DELETE = async (req: NextRequest) => {
   const body = await req.json();
+  console.log(body);
   return NextResponse.json(
     // {
     //   message: (await removeTemplate(body))
