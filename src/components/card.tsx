@@ -2,6 +2,7 @@ import { Copy, MoreVertical, Pen } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { toast } from "sonner";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   draft: { bg: "bg-amber-50", text: "text-amber-600" },
@@ -25,6 +26,7 @@ const Card = ({
   onClick,
   checked,
 }: props) => {
+  const pathname = usePathname();
   return (
     <div className=" flex items-center justify-between p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300">
       <div className="flex items-center gap-4">
@@ -32,7 +34,7 @@ const Card = ({
           <Checkbox checked={checked} />
         </span>
         <Link
-          href={`documents/${id}`}
+          href={`${pathname}/${id}`}
           className="text-lg font-medium text-gray-900 hover:text-gray-600 transition duration-200"
         >
           {title}

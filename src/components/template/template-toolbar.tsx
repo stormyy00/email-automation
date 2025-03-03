@@ -61,7 +61,21 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
     console.log("keep", keep);
     setSearch(keep);
     setTemplates(keep);
-    toast("Template has been delelted");
+    fetch("/api/templates", {
+      method: "DELETE",
+      body: JSON.stringify({ newsletterId: ids }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+      })
+      .then(() => {
+        toast.success("Deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error creating newsletters:", error);
+      });
   };
   return (
     <div className="flex items-center gap-2">
@@ -124,6 +138,19 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
                     type="text"
                     value={template[question.title as keyof TemplateType]}
                     onChange={(e) => handleTemplates(e, question.title)}
+                  />
+                )}
+                {question.type === "select" && (
+                  <Select
+                    options={[
+                      { label: "BlueHeart", value: "blue" },
+                      { label: "Sean.gov", value: "sean" },
+                      { label: "Jude's Hosiptial", value: "jude" },
+                    ]}
+                    onChange={(selected) =>
+                      console.log("Selected category:", selected)
+                    }
+                    placeholder="Select a Team"
                   />
                 )}
               </div>

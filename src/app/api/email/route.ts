@@ -15,6 +15,7 @@ type Props = {
 
 export const GET = async () => {
   const res = await emails();
+  console.log("nice", res);
   return NextResponse.json({ message: res ?? [] }, { status: 200 });
 };
 

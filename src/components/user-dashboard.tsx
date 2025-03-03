@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   BookTemplate,
   Mail,
@@ -9,11 +12,23 @@ import React from "react";
 import Tile from "./tile";
 
 const UserDashboard = () => {
+  const [greeting, setGreeting] = useState("Good Day");
+  useEffect(() => {
+    // Get the current time and set greeting
+    const hours = new Date().getHours();
+    if (hours < 12) {
+      setGreeting("Good Morning");
+    } else if (hours < 18) {
+      setGreeting("Good Afternoon");
+    } else {
+      setGreeting("Good Evening");
+    }
+  }, []);
   return (
     <div className="w-full space-y-8 p-6">
       <div className="flex justify-between">
         <p className="flex text-3xl font-semibold text-gray-800">
-          Good Evening, Jonathan
+          {greeting}, Jonathan
         </p>
         <div className="flex justify-center space-x-4">
           <button className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">

@@ -29,7 +29,7 @@ const Navigation = () => {
         {NAVTABS.map((tab, index) => (
           <SidebarGroup
             key={index}
-            className="flex flex-row items-center hover:bg-gradient-to-r hover:cursor-pointer hover:from-transparent hover:to-ttickles-lightblue gap-2"
+            className="flex flex-row items-center hover:bg-gradient-to-r hover:cursor-pointer hover:from-transparent hover:to-white/80 gap-2"
             onClick={() => router.push(tab.link)}
           >
             {tab.icon}
