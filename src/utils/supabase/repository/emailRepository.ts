@@ -9,12 +9,19 @@ export type Email = {
   scheduled: Date;
 };
 
-export const createEmail = async (email: Email) => {
-  await (await createClient()).from("emails").insert({
-    status: email.status,
-    subject: email.subject,
-    scheduled_date: email.scheduled.getTime(),
-  });
+export const createEmail = async (email: Email): Promise<UUID> => {
+  return (
+    await (
+      await createClient()
+    )
+      .from("emails")
+      .insert({
+        status: email.status,
+        subject: email.subject,
+        scheduled_date: email.scheduled.getTime(),
+      })
+      .select()
+  ).data?.at(0).id;
 };
 
 export const emails = async () => {
@@ -22,7 +29,10 @@ export const emails = async () => {
 };
 
 export const removeEmail = async (emailId: UUID) => {
-  await (await createClient()).from("emails").delete().eq("id", emailId);
+  return (
+    (await (await createClient()).from("emails").delete().eq("id", emailId))
+      .error != null
+  );
 };
 
 export const addRecipient = async (emailId: UUID, userEmail: string) => {

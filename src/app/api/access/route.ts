@@ -4,18 +4,39 @@ import {
   hasAccess,
   removeAccess,
 } from "@/utils/supabase/repository/accessRepository";
+import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+
+const ADMINS = ["jonathan.trujillo0432@gmail.com", "msaye007@ucr.edu"];
 
 type Props = {
   email: string;
 };
 
 export const GET = async () => {
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
+  if (
+    !user ||
+    user.error ||
+    (user.data && !ADMINS.includes(user.data.user.email!))
+  ) {
+    return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+  }
   const res = await access();
   return NextResponse.json({ message: res ?? [] }, { status: 200 });
 };
 
 export const POST = async (request: NextRequest) => {
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
+  if (
+    !user ||
+    user.error ||
+    (user.data && !ADMINS.includes(user.data.user.email!))
+  ) {
+    return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+  }
   const data = (await request.json().catch(() => undefined)) as
     | Props
     | undefined;
@@ -43,6 +64,15 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const DELETE = async (request: NextRequest) => {
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
+  if (
+    !user ||
+    user.error ||
+    (user.data && !ADMINS.includes(user.data.user.email!))
+  ) {
+    return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+  }
   const data = (await request.json().catch(() => undefined)) as
     | Props
     | undefined;
