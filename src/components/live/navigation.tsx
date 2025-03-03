@@ -5,7 +5,10 @@ import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const ITEMS = ["user"];
+const ITEMS = [{
+  name: "user",
+  requiresUser: true
+}];
 
 const Navigation = () => {
   const supabase = createClient()
@@ -33,13 +36,18 @@ const Navigation = () => {
         Auto-Auto
       </Link>
       <div className="flex gap-x-6 items-center">
-        {ITEMS.map((item) => (
+        {ITEMS.filter(item => {
+          if (item.requiresUser && !user) {
+            return false;
+          }
+          return true;
+        }).map((item) => (
           <Link
-            key={item}
-            href={`/${item}`}
+            key={item.name}
+            href={`/${item.name}`}
             className="relative text-black text-lg font-medium group"
           >
-            {item.charAt(0).toUpperCase() + item.slice(1)}
+            {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
             <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full" />
           </Link>
         ))}
