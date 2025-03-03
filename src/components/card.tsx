@@ -27,6 +27,7 @@ const Card = ({
   checked,
 }: props) => {
   const pathname = usePathname();
+
   return (
     <div className=" flex items-center justify-between p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300">
       <div className="flex items-center gap-4">

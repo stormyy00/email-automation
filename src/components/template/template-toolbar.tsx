@@ -15,7 +15,7 @@ import { QUESTIONS } from "@/data/questions";
 import Select from "../select";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { STATUSES } from "@/data/status";
+import { TYPES } from "@/data/status";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { TemplateType } from "@/types";
@@ -116,8 +116,8 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
             setSearch(
               value === ""
                 ? data
-                : data.filter(({ title }) =>
-                    title.toLowerCase().includes(value.toLowerCase()),
+                : data.filter(({ name }) =>
+                    name.toLowerCase().includes(value.toLowerCase()),
                   ),
             );
           }}
@@ -126,15 +126,15 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
         />
       </div>
       <Select
-        options={STATUSES.map(({ status }) => ({
-          label: status,
-          value: status,
+        options={TYPES.map(({ team }) => ({
+          label: team,
+          value: team,
         }))}
         onChange={(selected) => {
           setSearch(
             selected === "All"
               ? data
-              : data.filter((item) => item.newsletterStatus === selected),
+              : data.filter(({ team }) => team === selected),
           );
         }}
         placeholder="filter by status"

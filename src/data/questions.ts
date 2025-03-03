@@ -4,7 +4,7 @@ export const QUESTIONS = [
     type: "input",
   },
   {
-    title: "Body",
+    title: "body",
     type: "input",
   },
   {

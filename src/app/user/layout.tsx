@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "User",
@@ -16,6 +17,7 @@ const Layout = ({ children }: LayoutProps) => {
       <SidebarProvider>
         <Navigation />
         {children}
+        <Toaster />
       </SidebarProvider>
     </div>
   );

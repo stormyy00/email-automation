@@ -54,9 +54,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
     });
     setNewsletters((prev) => {
       const updated = prev.map((item) =>
-        checked[item.newsletterId]
-          ? { ...item, newsletterStatus: newStatus }
-          : item,
+        checked[item.id] ? { ...item, status: newStatus } : item,
       );
 
       setSearch([...updated]);
@@ -162,7 +160,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
           setSearch(
             selected === "All"
               ? data
-              : data.filter((item) => item.newsletterStatus === selected),
+              : data.filter(({ status }) => status === selected),
           );
         }}
         placeholder="filter by status"

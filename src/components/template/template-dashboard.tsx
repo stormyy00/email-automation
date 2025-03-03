@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import Card from "../card";
-import { TEMPLATES } from "@/data/mock";
+import Card from "../template/template-card";
+
 import TemplateToolbar from "../template/template-toolbar";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -15,11 +15,18 @@ import { toast } from "sonner";
 //   handleConfigure: () => void;
 // };
 
+interface Template {
+  name: string;
+  body: string;
+  id: string;
+  team: string;
+}
 const TemplateDashboard = ({ title }: { title: string }) => {
-  const [templates, setTemplates] = useState(TEMPLATES);
-  const [searchableItems, setSearch] = useState(TEMPLATES);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [searchableItems, setSearch] = useState<Template[]>([]);
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [popup, setPopup] = useState({
     visible: false,
   });
@@ -39,8 +46,8 @@ const TemplateDashboard = ({ title }: { title: string }) => {
         return res.json();
       })
       .then((data) => {
-        // setTemplates(data.newsletters);
-        // setSearch(data.newsletters);
+        setTemplates(data.message);
+        setSearch(data.message);
         console.log(data);
         toast.success("Templates loaded sucessfully");
       })
@@ -50,6 +57,58 @@ const TemplateDashboard = ({ title }: { title: string }) => {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const handleSaveTemplate = (
+    id: string,
+    data: { title: string; description: string },
+  ) => {
+    setSaving(true);
+
+    const templateToUpdate = templates.find((template) => template.id === id);
+
+    if (!templateToUpdate) {
+      toast.error("Template not found");
+      setSaving(false);
+      return;
+    }
+
+    const updatedTemplate = {
+      ...templateToUpdate,
+      name: data.title,
+      body: data.description,
+    };
+
+    fetch(`/api/templates/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedTemplate),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(() => {
+        const updatedTemplates = templates.map((template) =>
+          template.id === id
+            ? { ...template, name: data.title, body: data.description }
+            : template,
+        );
+
+        setTemplates(updatedTemplates);
+        setSearch(updatedTemplates);
+
+        toast.success("Template updated successfully");
+      })
+      .catch((error) => {
+        console.error("Error updating template:", error);
+        toast.error("Failed to update template");
+      })
+      .finally(() => setSaving(false));
+  };
 
   const handleConfigure = () => {
     console.log("hello");
@@ -71,25 +130,35 @@ const TemplateDashboard = ({ title }: { title: string }) => {
       />
       {!loading ? (
         <div className="flex flex-col gap-2">
-          {searchableItems.map(({ templateName, templateId, type }, index) => (
+          {searchableItems.map(({ name, body, id, team }, index) => (
             <Card
-              title={templateName}
-              id={templateId}
-              status={type}
+              title={name}
+              id={id}
+              description={body}
+              status={team}
               handleConfigure={handleConfigure}
               onClick={() => {
                 setChecked({
                   ...checked,
-                  [templateId]: !checked[templateId],
+                  [id]: !checked[id],
                 });
               }}
-              checked={checked[templateId as keyof typeof checked]}
+              checked={checked[id as keyof typeof checked]}
               key={index}
+              onSave={handleSaveTemplate}
             />
           ))}
         </div>
       ) : (
         <Loader2 size={35} />
+      )}
+      {saving && (
+        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md shadow-lg flex items-center gap-3">
+            <Loader2 size={24} className="animate-spin" />
+            <span>Saving changes...</span>
+          </div>
+        </div>
       )}
     </div>
   );
