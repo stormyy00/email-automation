@@ -1,12 +1,11 @@
 import { Copy, MoreVertical, Pen } from "lucide-react";
-import { Checkbox } from "./ui/checkbox";
+import { Checkbox } from "../ui/checkbox";
 import { toast } from "sonner";
 import Link from "next/link";
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
-  draft: { bg: "bg-amber-50", text: "text-amber-600" },
-  schedule: { bg: "bg-blue-50", text: "text-blue-600" },
-  sent: { bg: "bg-green-50", text: "text-green-600" },
+  operations: { bg: "bg-amber-50", text: "text-amber-600" },
+  sponsorship: { bg: "bg-blue-50", text: "text-blue-600" },
 };
 
 type props = {
@@ -17,7 +16,7 @@ type props = {
   onClick: () => void;
   checked: boolean;
 };
-const Card = ({
+const TemplateCard = ({
   title,
   id,
   status,
@@ -65,4 +64,4 @@ const Card = ({
   );
 };
 
-export default Card;
+export default TemplateCard;

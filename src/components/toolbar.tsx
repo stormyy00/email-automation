@@ -30,12 +30,7 @@ interface props {
   setNewsletters: (value: any[] | ((prev: any[]) => any[])) => void;
 }
 
-const Toolbar = ({
-  data,
-  setSearch,
-  checked,
-  setNewsletters,
-}: props) => {
+const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [popup, setPopup] = useState({

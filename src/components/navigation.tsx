@@ -12,7 +12,6 @@ import Link from "next/link";
 // import Logo from "@/public/temporarylogo.png";
 import { usePathname, useRouter } from "next/navigation";
 
-
 const Navigation = () => {
   const path = usePathname();
   const router = useRouter();
@@ -24,10 +23,7 @@ const Navigation = () => {
         {/* <Link href="/">
           <Image src={Logo} alt="TTickle Logo" className="hover:scale-105" />
         </Link> */}
-       <div className="text-4xl font-bold">
-        Auto-Auto
-        
-        </div> 
+        <div className="text-4xl font-bold">Auto-Auto</div>
       </SidebarHeader>
       <SidebarContent className="flex flex-col text-lg ml-3 items-center">
         {NAVTABS.map((tab, index) => (
@@ -41,9 +37,7 @@ const Navigation = () => {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter>
-       Profile
-      </SidebarFooter>
+      <SidebarFooter>Profile</SidebarFooter>
     </Sidebar>
   );
 };

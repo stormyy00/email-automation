@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
@@ -14,10 +13,10 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <div>
-        <SidebarProvider>
-          <Navigation />
-          {children}
-        </SidebarProvider>
+      <SidebarProvider>
+        <Navigation />
+        {children}
+      </SidebarProvider>
     </div>
   );
 };

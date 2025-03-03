@@ -34,13 +34,24 @@ export const TABS: Tabs = {
     expand: true,
     tabs: [
       {
-        name: "Profile",
-        link: "/user/profile",
+        name: "Home",
+        link: "/user",
         icon: <User />,
       },
       {
-        name: "My Organization",
-        link: "/orgs/@mine",
+        name: "Emails",
+        link: "/user/emails",
+        icon: <User />,
+      },
+      {
+        name: "Templates",
+        link: "/user/templates",
+        icon: <Users2 />,
+        requiresOrg: true,
+      },
+      {
+        name: "History",
+        link: "/user/history",
         icon: <Users2 />,
         requiresOrg: true,
       },

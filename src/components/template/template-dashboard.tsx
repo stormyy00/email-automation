@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import Toolbar from "./toolbar";
-import Card from "./card";
-import { ITEMS } from "@/data/mock";
+import Card from "../card";
+import { TEMPLATES } from "@/data/mock";
+import TemplateToolbar from "../template/template-toolbar";
 
 // type props = {
 //   document: string;
@@ -13,9 +13,9 @@ import { ITEMS } from "@/data/mock";
 //   handleConfigure: () => void;
 // };
 
-const Dashboard = ({ title }: { title: string }) => {
-  const [documents, setDocuments] = useState(ITEMS);
-  const [searchableItems, setSearch] = useState(ITEMS);
+const TemplateDashboard = ({ title }: { title: string }) => {
+  const [templates, setTemplates] = useState(TEMPLATES);
+  const [searchableItems, setSearch] = useState(TEMPLATES);
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   const [popup, setPopup] = useState({
     visible: false,
@@ -35,28 +35,29 @@ const Dashboard = ({ title }: { title: string }) => {
   return (
     <div className="flex flex-col w-5/6 mx-10 gap-4">
       <div className="text-4xl font-bold">{title}</div>
-      <Toolbar
-        data={documents}
+
+      <TemplateToolbar
+        data={templates}
         setSearch={setSearch}
         checked={checked}
         setChecked={setChecked}
-        setNewsletters={setDocuments}
+        setTemplates={setTemplates}
       />
 
       <div className="flex flex-col gap-2">
-        {searchableItems.map(({ title, emailId, status }, index) => (
+        {searchableItems.map(({ templateName, templateId, type }, index) => (
           <Card
-            title={title}
-            id={emailId}
-            status={status}
+            title={templateName}
+            id={templateId}
+            status={type}
             handleConfigure={handleConfigure}
             onClick={() => {
               setChecked({
                 ...checked,
-                [emailId]: !checked[emailId],
+                [templateId]: !checked[templateId],
               });
             }}
-            checked={checked[emailId as keyof typeof checked]}
+            checked={checked[templateId as keyof typeof checked]}
             key={index}
           />
         ))}
@@ -65,4 +66,4 @@ const Dashboard = ({ title }: { title: string }) => {
   );
 };
 
-export default Dashboard;
+export default TemplateDashboard;

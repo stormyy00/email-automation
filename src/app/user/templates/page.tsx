@@ -1,10 +1,10 @@
-import UserDashboard from "@/components/user-dashboard";
+import Templatebody from "@/components/template/template-dashboard";
 import React from "react";
 
 const page = () => {
   return (
     <div className="w-full">
-      <UserDashboard />
+      <Templatebody title="Templates" />
     </div>
   );
 };
