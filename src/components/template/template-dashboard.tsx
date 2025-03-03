@@ -79,7 +79,7 @@ const TemplateDashboard = ({ title }: { title: string }) => {
       body: data.description,
     };
 
-    fetch(`/api/templates/${id}`, {
+    fetch(`/api/templates/${updatedTemplate.team}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

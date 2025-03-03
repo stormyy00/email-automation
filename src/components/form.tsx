@@ -32,6 +32,7 @@ const Form = () => {
     recipients: "",
     subject: "",
     body: "",
+    templateId: "",
   });
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(undefined);
@@ -59,43 +60,52 @@ const Form = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then((diddy) => {
         setEmail({
-          recipients: data.message[0].recipients.join(", "),
-          subject: data.message[0].subject,
+          recipients: diddy.message[0].recipients.join(", "),
+          subject: diddy.message[0].subject,
+          templateId: diddy.message[0].templateId,
           body: "this is a body",
         });
-        console.log("nice", data);
+        fetch("/api/templates")
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then((data) => {
+            setTemplates(
+              data.message.reduce((grouped, item) => {
+                const team = item.team;
+                // If the team doesn't exist yet, create an empty array for it
+                if (!grouped[team]) {
+                  grouped[team] = [];
+                }
+                // Add the current item to the correct team group
+                grouped[team].push(item);
+                return grouped;
+              }, {}),
+            );
+            for (const x of data.message) {
+              if (
+                diddy.message[0].templateId &&
+                diddy.message[0].templateId != "" &&
+                x.id === diddy.message[0].templateId
+              ) {
+                setSelectedTemplate(x);
+                return;
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching templates:", error);
+          });
       })
       .catch((error) => {
         console.error("Error fetching newsletters:", error);
       })
       .finally(() => console.log("done")); // toaast
-
-    fetch("/api/templates")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setTemplates(
-          data.message.reduce((grouped, item) => {
-            const team = item.team;
-            // If the team doesn't exist yet, create an empty array for it
-            if (!grouped[team]) {
-              grouped[team] = [];
-            }
-            // Add the current item to the correct team group
-            grouped[team].push(item);
-            return grouped;
-          }, {}),
-        );
-      })
-      .catch((error) => {
-        console.error("Error fetching templates:", error);
-      });
   }, [id]);
 
   const handleSubmit = async (status: "draft" | "scheduled" | "sent") => {
@@ -195,7 +205,14 @@ const Form = () => {
         />
         <Select onValueChange={(value) => setSelectedTemplate(value)}>
           <SelectTrigger>
-            <SelectValue placeholder="Select a template..." className="mt-4" />
+            <SelectValue
+              placeholder={
+                selectedTemplate
+                  ? selectedTemplate.name
+                  : "Select a template..."
+              }
+              className="mt-4"
+            />
           </SelectTrigger>
           <SelectContent>
             {/* <SelectGroup> */}

@@ -43,13 +43,7 @@ export const removeEmail = async (emailId: UUID) => {
 };
 
 export const updateEmail = async (emailId: UUID, fields: object) => {
-  console.log(emailId, fields);
-  console.log(
-    await (await createClient())
-      .from("emails")
-      .update(fields)
-      .eq("id", emailId),
-  );
+  await (await createClient()).from("emails").update(fields).eq("id", emailId);
 };
 
 export const addRecipient = async (emailId: UUID, userEmail: string) => {

@@ -1,9 +1,10 @@
 import {
   Team,
   Template,
-  createTemplate,
   templates,
+  updateTemplate,
 } from "@/utils/supabase/repository/templateRepository";
+import { UUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
@@ -21,7 +22,7 @@ export const GET = async (req: NextRequest, { params }: Params) => {
 export const POST = async (req: NextRequest, { params }: Params) => {
   const { team } = params;
   const data = (await req.json().catch(() => undefined)) as
-    | Template
+    | ({ id: string } & Template)
     | undefined;
   if (!data) {
     return NextResponse.json(
@@ -32,7 +33,7 @@ export const POST = async (req: NextRequest, { params }: Params) => {
     );
   }
 
-  await createTemplate({
+  await updateTemplate(data.id as UUID, {
     body: data.body,
     name: data.name,
     team: team as Team,
@@ -40,7 +41,7 @@ export const POST = async (req: NextRequest, { params }: Params) => {
 
   return NextResponse.json(
     {
-      message: "Successfully created template.",
+      message: "Successfully updated template.",
     },
     { status: 200 },
   );

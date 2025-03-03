@@ -15,6 +15,13 @@ export const createTemplate = async (template: Template) => {
     .insert({ name: template.name, body: template.body, team: template.team });
 };
 
+export const updateTemplate = async (templateId: UUID, fields: object) => {
+  await (await createClient())
+    .from("templates")
+    .update(fields)
+    .eq("id", templateId);
+};
+
 export const templates = async (team?: string) => {
   return team
     ? (await (await createClient()).from("templates").select().eq("team", team))
