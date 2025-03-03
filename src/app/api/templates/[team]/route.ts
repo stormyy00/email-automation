@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import { templates } from "@/utils/supabase/repository/templateRepository";
+import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
     params: {
@@ -8,4 +9,9 @@ type Params = {
 
 export const GET = async (req: NextRequest, { params }: Params) => {
     const { team } = params;
+    const templateList = await templates(team);
+    return NextResponse.json(
+        { message: templateList ?? [] },
+        { status: 200 }
+    )
 }

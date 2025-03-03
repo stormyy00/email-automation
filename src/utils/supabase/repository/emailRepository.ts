@@ -10,7 +10,7 @@ export type Email = {
 }
 
 export const createEmail = async (email: Email) => {
-    (await createClient()).from('emails').insert({ status: email.status, subject: email.subject, scheduled_date: email.scheduled.getTime() })
+    (await (await createClient()).from('emails').insert({ status: email.status, subject: email.subject, scheduled_date: email.scheduled.getTime() }))
 }
 
 export const emails = async () => {
@@ -18,11 +18,11 @@ export const emails = async () => {
 }
 
 export const removeEmail = async (emailId: UUID) => {
-    (await createClient()).from('emails').delete().eq("id", emailId)
+    (await (await createClient()).from('emails').delete().eq("id", emailId))
 }
 
 export const addRecipient = async (emailId: UUID, userEmail: string) => {
-    (await createClient()).from('recipients').insert({ email_id: emailId, user_email: userEmail })
+    (await (await createClient()).from('recipients').insert({ email_id: emailId, user_email: userEmail }))
 }
 
 export const recipients = async (emailId: UUID) => {
@@ -30,5 +30,5 @@ export const recipients = async (emailId: UUID) => {
 }
 
 export const removeRecipient = async (emailId: UUID, userEmail: string) => {
-    (await createClient()).from('recipients').delete().eq("email_id", emailId).eq("user_email", userEmail)
+    (await (await createClient()).from('recipients').delete().eq("email_id", emailId).eq("user_email", userEmail))
 }

@@ -1,7 +1,7 @@
 import { createClient } from "../server"
 
 export const addAccess = async (email: string) => {
-    (await createClient()).from('access').insert({ email: email })
+    (await (await createClient()).from('access').insert({ email: email }))
 }
 
 export const access = async () => {
@@ -9,5 +9,9 @@ export const access = async () => {
 }
 
 export const removeAccess = async (email: string) => {
-    (await createClient()).from('access').delete().eq("email", email)
+    (await (await createClient()).from('access').delete().eq("email", email))
+}
+
+export const hasAccess = async (email: string) => {
+    return ((await (await createClient()).from('access').select().eq("email", email)).data?.length ?? 0) > 0
 }

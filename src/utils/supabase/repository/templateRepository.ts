@@ -10,7 +10,7 @@ export type Template = {
 }
 
 export const createTemplate = async (template: Template) => {
-    (await createClient()).from('templates').insert({ name: template.name, body: template.body, team: template.team })
+    (await (await createClient()).from('templates').insert({ name: template.name, body: template.body, team: template.team }))
 }
 
 export const templates = async (team?: string) => {
@@ -18,5 +18,5 @@ export const templates = async (team?: string) => {
 }
 
 export const removeTemplate = async (templateId: UUID) => {
-    (await createClient()).from('templates').delete().eq("id", templateId)
+    (await (await createClient()).from('templates').delete().eq("id", templateId))
 }
