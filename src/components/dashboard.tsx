@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Toolbar from "./toolbar";
 import Card from "./card";
-import { ITEMS } from "@/data/mock";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -15,10 +14,15 @@ import { Loader2 } from "lucide-react";
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   handleConfigure: () => void;
 // };
+interface Email {
+  subject: string;
+  id: string;
+  status: string;
+}
 
 const Dashboard = ({ title }: { title: string }) => {
-  const [emails, setEmails] = useState(ITEMS || []);
-  const [searchableItems, setSearch] = useState(ITEMS || []);
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [searchableItems, setSearch] = useState<Email[]>([]);
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
   const [popup, setPopup] = useState({
@@ -36,9 +40,8 @@ const Dashboard = ({ title }: { title: string }) => {
         return res.json();
       })
       .then((data) => {
-        // setEmails(data.newsletters);
-        // setSearch(data.newsletters);
-        console.log(data);
+        setEmails(data.message);
+        setSearch(data.message);
         toast.success("Emails loaded sucessfully");
       })
       .catch((error) => {
@@ -71,19 +74,19 @@ const Dashboard = ({ title }: { title: string }) => {
       />
       {!loading ? (
         <div className="flex flex-col gap-2">
-          {searchableItems.map(({ title, emailId, status }, index) => (
+          {searchableItems.map(({ subject, id, status }, index) => (
             <Card
-              title={title}
-              id={emailId}
+              title={subject}
+              id={id}
               status={status}
               handleConfigure={handleConfigure}
               onClick={() => {
                 setChecked({
                   ...checked,
-                  [emailId]: !checked[emailId],
+                  [id]: !checked[id],
                 });
               }}
-              checked={checked[emailId as keyof typeof checked]}
+              checked={checked[id as keyof typeof checked]}
               key={index}
             />
           ))}

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   draft: { bg: "bg-amber-50", text: "text-amber-600" },
-  schedule: { bg: "bg-blue-50", text: "text-blue-600" },
+  scheduled: { bg: "bg-blue-50", text: "text-blue-600" },
   sent: { bg: "bg-green-50", text: "text-green-600" },
 };
 

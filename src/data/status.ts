@@ -8,18 +8,18 @@ export const STATUSES = [
     color: "bg-amber-500 hover:bg-amber-500",
   },
   {
-    status: "schedule",
+    status: "scheduled",
     color: "bg-orange-500 hover:bg-orange-500",
   },
 ];
 
 export const TYPES = [
   {
-    status: "operations",
+    team: "operations",
     color: "bg-blue-500 hover:bg-blue-500",
   },
   {
-    status: "sponsorship",
+    team: "sponsorship",
     color: "bg-amber-500 hover:bg-amber-500",
   },
 ];

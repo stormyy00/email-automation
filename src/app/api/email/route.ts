@@ -37,5 +37,8 @@ export const POST = async (req: NextRequest) => {
   } as Email;
   const result = await createEmail(email);
   data.recipients.forEach(async (recp) => await addRecipient(result, recp));
-  return NextResponse.json({ message: "Email created." }, { status: 200 });
+  return NextResponse.json(
+    { message: "Email created.", id: result },
+    { status: 200 },
+  );
 };

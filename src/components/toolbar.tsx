@@ -44,17 +44,6 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
 
   const ids = Object.keys(checked).filter((id) => checked[id]);
 
-  const handleChange = (e: string) => {
-    setValue(e);
-    setSearch(
-      e === ""
-        ? data
-        : data.filter(({ newsletter }) =>
-            newsletter.toLowerCase().includes(e.toLowerCase()),
-          ),
-    );
-  };
-
   const handleStatus = async (newStatus: string) => {
     await fetch("/api/newsletter", {
       method: "PUT",
@@ -75,8 +64,8 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
     });
   };
 
-  const handleNewletter = () => {
-    fetch("/api/newsletter", {
+  const handleEmail = () => {
+    fetch("/api/email", {
       method: "POST",
     })
       .then((res) => {
@@ -87,8 +76,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
       })
       .then((data) => {
         console.log("Created newsletter:", data);
-
-        router.push(`newsletter/${data.newsletterId}`);
+        router.push(`emails/${data.id}`);
       })
       .catch((error) => {
         console.error("Error creating newsletters:", error);
@@ -100,9 +88,9 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
     console.log("keep", keep);
     setSearch(keep);
     setNewsletters(keep);
-    fetch("/api/newsletter", {
+    fetch("/api/email", {
       method: "DELETE",
-      body: JSON.stringify({ newsletterId: ids }),
+      body: JSON.stringify(ids),
     })
       .then((res) => {
         if (!res.ok) {
@@ -150,8 +138,18 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
         </div>
         <Input
           value={value}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search newsletters..."
+          onChange={(e) => {
+            const value = e.target.value;
+            setValue(value);
+            setSearch(
+              value === ""
+                ? data
+                : data.filter(({ subject }) =>
+                    subject.toLowerCase().includes(value.toLowerCase()),
+                  ),
+            );
+          }}
+          placeholder="Search emails"
           className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 focus:ring-2 focus:ring-gray-200 focus:border-gray-400 text-sm"
         />
       </div>
@@ -171,7 +169,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
       />
       <Plus
         size={48}
-        onClick={handleNewletter}
+        onClick={handleEmail}
         className="cursor-pointer hover:text-blue-500 duration-300"
       />
       <Trash

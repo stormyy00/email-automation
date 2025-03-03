@@ -37,11 +37,12 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
   const [popup, setPopup] = useState({
     visible: false,
   });
-
   const [template, setTemplate] = useState<TemplateType>({
     subject: "",
     body: "",
+    team: "",
   });
+
   const ids = Object.keys(checked).filter((id) => checked[id]);
 
   const handleTemplates = (e: ChangeEvent<HTMLInputElement>, key: string) => {
@@ -56,6 +57,30 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
     });
   };
 
+  const handleAddTemplate = () => {
+    fetch("/api/templates", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(template),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        toast.success("Template saved successfully");
+        setPopup({ ...popup, visible: false });
+      })
+      .catch((error) => {
+        console.error("Error saving template:", error);
+        toast.error("Failed to save template");
+      });
+  };
+
   const deleteTemplate = () => {
     const keep = data.filter((item) => !ids.includes(item.newsletterId));
     console.log("keep", keep);
@@ -63,7 +88,7 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
     setTemplates(keep);
     fetch("/api/templates", {
       method: "DELETE",
-      body: JSON.stringify({ newsletterId: ids }),
+      body: JSON.stringify(ids),
     })
       .then((res) => {
         if (!res.ok) {
@@ -143,9 +168,8 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
                 {question.type === "select" && (
                   <Select
                     options={[
-                      { label: "BlueHeart", value: "blue" },
-                      { label: "Sean.gov", value: "sean" },
-                      { label: "Jude's Hosiptial", value: "jude" },
+                      { label: "Sponsorship", value: "sponsorship" },
+                      { label: "Operations", value: "operations" },
                     ]}
                     onChange={(selected) =>
                       console.log("Selected category:", selected)
@@ -165,7 +189,7 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
             </AlertDialogCancel>
             <AlertDialogAction>
               <Button
-                onClick={() => setPopup({ ...popup, visible: false })}
+                onClick={handleAddTemplate}
                 className="bg-ttickles-blue text-white hover:bg-ttickles-blue"
               >
                 Submit
