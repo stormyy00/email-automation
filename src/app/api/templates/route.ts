@@ -2,7 +2,7 @@ import {
   Team,
   Template,
   createTemplate,
-  //   removeTemplate,
+  //   removeTemplate,npm run format
   templates,
 } from "@/utils/supabase/repository/templateRepository";
 import { NextRequest, NextResponse } from "next/server";
