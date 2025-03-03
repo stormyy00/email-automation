@@ -1,6 +1,5 @@
-
-import Landing from "@/components/landing";
-import Navigation from "@/components/navigation";
+import Landing from "@/components/live/landing";
+import Navigation from "@/components/live/navigation";
 
 
 export default function Home() {

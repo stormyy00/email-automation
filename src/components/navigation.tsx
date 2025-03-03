@@ -1,33 +1,50 @@
-import Link from "next/link";
+"use client";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+} from "@/components/ui/sidebar";
 
-const ITEMS = ["user"];
+import { TABS } from "@/data/navigation";
+import Link from "next/link";
+// import Logo from "@/public/temporarylogo.png";
+import { usePathname, useRouter } from "next/navigation";
+
 
 const Navigation = () => {
+  const path = usePathname();
+  const router = useRouter();
+  const NAVTABS = TABS[path.split("/")[1]].tabs;
+
   return (
-    <div className="flex justify-between items-center w-full sticky top-0 p-4 shadow-md z-50 bg-white/80 backdrop-blur-lg">
-      {/* Logo */}
-      <Link href="/" className="text-2xl font-semibold text-black">
+    <Sidebar className="text-white">
+      <SidebarHeader className="flex flex-col justify-center items-center">
+        {/* <Link href="/">
+          <Image src={Logo} alt="TTickle Logo" className="hover:scale-105" />
+        </Link> */}
+       <div className="text-4xl font-bold">
         Auto-Auto
-      </Link>
-      <div className="flex gap-x-6 items-center">
-        {ITEMS.map((item) => (
-          <Link
-            key={item}
-            href={`/${item}`}
-            className="relative text-black text-lg font-medium group"
+        
+        </div> 
+      </SidebarHeader>
+      <SidebarContent className="flex flex-col text-lg ml-3 items-center">
+        {NAVTABS.map((tab, index) => (
+          <SidebarGroup
+            key={index}
+            className="flex flex-row items-center hover:bg-gradient-to-r hover:cursor-pointer hover:from-transparent hover:to-ttickles-lightblue gap-2"
+            onClick={() => router.push(tab.link)}
           >
-            {item.charAt(0).toUpperCase() + item.slice(1)}
-            <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full" />
-          </Link>
+            {tab.icon}
+            <Link href={tab.link}>{tab.name}</Link>
+          </SidebarGroup>
         ))}
-        <Link
-          href="/register"
-          className="px-4 py-2 bg-gradient-to-br from-orange-300 to-orange-700 text-white font-semibold rounded-xl shadow-md hover:scale-105 transition-transform duration-300"
-        >
-          Join Us
-        </Link>
-      </div>
-    </div>
+      </SidebarContent>
+      <SidebarFooter>
+       Profile
+      </SidebarFooter>
+    </Sidebar>
   );
 };
 
