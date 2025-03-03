@@ -19,7 +19,7 @@ export const GET = async () => {
   return NextResponse.json({ message: res ?? [] }, { status: 200 });
 };
 
-export const POST = async (req: NextRequest) => {
+export const PUT = async (req: NextRequest) => {
   const data = (await req.json().catch(() => undefined)) as Props | undefined;
   if (!data) {
     return NextResponse.json(
@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
   const email = {
     status: data.isDraft ? "draft" : "scheduled",
     subject: data.subject,
-    scheduled: new Date(data.scheduled),
+    scheduled_date: data.scheduled,
   } as Email;
   const result = await createEmail(email);
   data.recipients.forEach(async (recp) => await addRecipient(result, recp));

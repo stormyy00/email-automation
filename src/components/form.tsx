@@ -16,13 +16,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Label } from "./ui/label";
 
 const Form = () => {
   const [email, setEmail] = useState({
-    emailAdress: "",
+    recipients: "",
     subject: "",
     body: "",
   });
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(undefined);
   const [error, setError] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [popup, setPopup] = useState({
@@ -49,7 +61,7 @@ const Form = () => {
       })
       .then((data) => {
         setEmail({
-          emailAdress: "lil bro",
+          recipients: data.message[0].recipients.join(", "),
           subject: data.message[0].subject,
           body: "this is a body",
         });
@@ -59,6 +71,31 @@ const Form = () => {
         console.error("Error fetching newsletters:", error);
       })
       .finally(() => console.log("done")); // toaast
+
+    fetch("/api/templates")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setTemplates(
+          data.message.reduce((grouped, item) => {
+            const team = item.team;
+            // If the team doesn't exist yet, create an empty array for it
+            if (!grouped[team]) {
+              grouped[team] = [];
+            }
+            // Add the current item to the correct team group
+            grouped[team].push(item);
+            return grouped;
+          }, {}),
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching templates:", error);
+      });
   }, [id]);
 
   const handleSubmit = async (status: "draft" | "scheduled" | "sent") => {
@@ -76,11 +113,10 @@ const Form = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          document: {
-            ...email,
-            status,
-            scheduled: status === "scheduled" ? new Date().toISOString() : null, // Add scheduled date if needed
-          },
+          ...email,
+          status,
+          templateId: selectedTemplate.id,
+          scheduled: status === "scheduled" ? Date.now() : 0, // Add scheduled date if needed
         }),
       });
 
@@ -137,33 +173,63 @@ const Form = () => {
   if (error) {
     <div>uh oh</div>;
   }
+
+  console.log(templates);
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-6 bg-white shadow rounded-lg">
       <h2 className="text-2xl font-semibold text-gray-800">Email Editor</h2>
-      <Input
-        className="mt-4"
-        value={email.emailAdress}
-        onChange={(e) =>
-          setEmail((prev) => ({ ...prev, subject: e.target.value }))
-        }
-        placeholder="Email Adress"
-      />
-      <Input
-        className="mt-4"
-        value={email.subject}
-        onChange={(e) =>
-          setEmail((prev) => ({ ...prev, subject: e.target.value }))
-        }
-        placeholder="Enter subject"
-      />
-      <Textarea
-        className="mt-3 h-72 resize-none"
-        value={email.body}
-        onChange={(e) =>
-          setEmail((prev) => ({ ...prev, body: e.target.value }))
-        }
-        placeholder="Enter body"
-      />
+      <div className="flex flex-col gap-y-4 mt-4">
+        <Input
+          value={email.recipients}
+          onChange={(e) =>
+            setEmail((prev) => ({ ...prev, recipients: e.target.value }))
+          }
+          placeholder="Email Address"
+        />
+        <Input
+          value={email.subject}
+          onChange={(e) =>
+            setEmail((prev) => ({ ...prev, subject: e.target.value }))
+          }
+          placeholder="Enter subject"
+        />
+        <Select onValueChange={(value) => setSelectedTemplate(value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a template..." className="mt-4" />
+          </SelectTrigger>
+          <SelectContent>
+            {/* <SelectGroup> */}
+            {Object.keys(templates)
+              .filter((team) => team !== "")
+              .map((team, key) => {
+                return (
+                  <SelectGroup key={key}>
+                    <SelectLabel key={key}>
+                      {team[0].toUpperCase() + team.substring(1)}
+                    </SelectLabel>
+                    {templates[team].map((template, key1) => {
+                      return (
+                        <SelectItem key={key1} value={template}>
+                          {template.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                );
+              })}
+          </SelectContent>
+        </Select>
+        {selectedTemplate && (
+          <>
+            <Label className="font-bold">preview text</Label>
+            <Textarea
+              value={selectedTemplate.body}
+              className="h-48 text-gray-500"
+              contentEditable={false}
+            />
+          </>
+        )}
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center justify-end w-fit mt-4 px-4 py-2 bg-black text-white text-lg font-medium rounded-lg transition hover:bg-black/70">

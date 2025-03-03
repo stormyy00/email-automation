@@ -46,6 +46,7 @@ const TemplateDashboard = ({ title }: { title: string }) => {
         return res.json();
       })
       .then((data) => {
+        console.log(data.message);
         setTemplates(data.message);
         setSearch(data.message);
         console.log(data);

@@ -64,7 +64,13 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
 
   const handleEmail = () => {
     fetch("/api/email", {
-      method: "POST",
+      method: "PUT",
+      body: JSON.stringify({
+        subject: "",
+        recipients: [],
+        scheduled: Date.now(),
+        isDraft: true,
+      }),
     })
       .then((res) => {
         if (!res.ok) {

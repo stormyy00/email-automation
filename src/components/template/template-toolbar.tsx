@@ -152,7 +152,7 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
       <AlertDialog open={popup.visible}>
         <AlertDialogContent className="flex flex-col">
           <AlertDialogHeader>
-            <AlertDialogTitle>Configure Newsletter</AlertDialogTitle>
+            <AlertDialogTitle>Configure Template</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogDescription className="flex flex-col gap-4">
             {QUESTIONS.map((question, index) => (

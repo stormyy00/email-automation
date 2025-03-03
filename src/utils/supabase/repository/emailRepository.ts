@@ -6,7 +6,8 @@ export type Status = "scheduled" | "sent" | "draft";
 export type Email = {
   status: Status;
   subject: string;
-  scheduled: Date;
+  scheduled_date: number;
+  templateId: string;
 };
 
 export const createEmail = async (email: Email): Promise<UUID> => {
@@ -18,20 +19,36 @@ export const createEmail = async (email: Email): Promise<UUID> => {
       .insert({
         status: email.status,
         subject: email.subject,
-        scheduled_date: email.scheduled.getTime(),
+        scheduled_date: email.scheduled_date,
+        templateId: "",
       })
       .select()
   ).data?.at(0).id;
 };
 
 export const emails = async () => {
-  return (await (await createClient()).from("emails").select()).data;
+  const emails =
+    (await (await createClient()).from("emails").select()).data ?? [];
+  for (const x of emails) {
+    x.recipients = await recipients(x.id);
+  }
+  return emails;
 };
 
 export const removeEmail = async (emailId: UUID) => {
   return (
     (await (await createClient()).from("emails").delete().eq("id", emailId))
       .error != null
+  );
+};
+
+export const updateEmail = async (emailId: UUID, fields: object) => {
+  console.log(emailId, fields);
+  console.log(
+    await (await createClient())
+      .from("emails")
+      .update(fields)
+      .eq("id", emailId),
   );
 };
 
