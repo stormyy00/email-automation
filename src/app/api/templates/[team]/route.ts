@@ -7,5 +7,5 @@ type Params = {
 }
 
 export const GET = async (req: NextRequest, { params }: Params) => {
-    console.log(params.team)
+    const { team } = params;
 }

@@ -14,7 +14,7 @@ export const createEmail = async (email: Email) => {
 }
 
 export const emails = async () => {
-    return (await createClient()).from('emails').select()
+    return (await (await createClient()).from('emails').select()).data
 }
 
 export const removeEmail = async (emailId: UUID) => {
@@ -23,6 +23,10 @@ export const removeEmail = async (emailId: UUID) => {
 
 export const addRecipient = async (emailId: UUID, userEmail: string) => {
     (await createClient()).from('recipients').insert({ email_id: emailId, user_email: userEmail })
+}
+
+export const recipients = async (emailId: UUID) => {
+    return (await (await createClient()).from('recipients').select().eq("email_id", emailId)).data
 }
 
 export const removeRecipient = async (emailId: UUID, userEmail: string) => {
