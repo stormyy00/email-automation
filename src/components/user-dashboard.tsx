@@ -16,8 +16,8 @@ import { useRouter } from "next/navigation";
 const UserDashboard = () => {
   const router = useRouter();
   const [greeting, setGreeting] = useState("Good Day");
+
   useEffect(() => {
-    // Get the current time and set greeting
     const hours = new Date().getHours();
     if (hours < 12) {
       setGreeting("Good Morning");

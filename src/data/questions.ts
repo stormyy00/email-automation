@@ -3,12 +3,16 @@ export const QUESTIONS = [
     title: "name",
     type: "input",
   },
+  //   {
+  //     title: "subject",
+  //     type: "input",
+  //   },
   {
     title: "body",
     type: "textarea",
   },
   {
-    title: "type",
+    title: "team",
     type: "select",
   },
 ];
