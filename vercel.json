@@ -1,8 +1,10 @@
 {
-  "crons": [
-    {
-      "path": "/api/scheduled",
-      "schedule": "*/1 * * * *"
-    }
-  ]
-}
+    "version": 2,
+    "crons": [
+      {
+        "path": "/api/scheduled",
+        "schedule": "*/1 * * * *"
+      }
+    ]
+  }
+  
