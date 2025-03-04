@@ -27,6 +27,19 @@ import {
 } from "./ui/select";
 import { Label } from "./ui/label";
 
+type Team = "operations" | "sponsorship";
+
+type Template = {
+  id: string;
+  name: string;
+  body: string;
+  team: Team;
+};
+
+type GroupedTemplate = {
+  [key: string]: Template[]
+}
+
 const Form = () => {
   const [email, setEmail] = useState({
     recipients: "",
@@ -34,8 +47,8 @@ const Form = () => {
     body: "",
     templateId: "",
   });
-  const [templates, setTemplates] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState(undefined);
+  const [templates, setTemplates] = useState<GroupedTemplate>({});
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
   const [error, setError] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [popup, setPopup] = useState({
@@ -76,7 +89,7 @@ const Form = () => {
           })
           .then((data) => {
             setTemplates(
-              data.message.reduce((grouped, item) => {
+              data.message.reduce((grouped: Record<Team, Template[]>, item: Template) => {
                 const team = item.team;
                 // If the team doesn't exist yet, create an empty array for it
                 if (!grouped[team]) {
@@ -125,7 +138,7 @@ const Form = () => {
         body: JSON.stringify({
           ...email,
           status,
-          templateId: selectedTemplate.id,
+          templateId: selectedTemplate?.id ?? null,
           scheduled: status === "scheduled" ? Date.now() : 0, // Add scheduled date if needed
         }),
       });
@@ -203,7 +216,7 @@ const Form = () => {
           }
           placeholder="Enter subject"
         />
-        <Select onValueChange={(value) => setSelectedTemplate(value)}>
+        <Select onValueChange={(value) => setSelectedTemplate(JSON.parse(value))}>
           <SelectTrigger>
             <SelectValue
               placeholder={
@@ -226,7 +239,7 @@ const Form = () => {
                     </SelectLabel>
                     {templates[team].map((template, key1) => {
                       return (
-                        <SelectItem key={key1} value={template}>
+                        <SelectItem key={key1} value={JSON.stringify(template)}>
                           {template.name}
                         </SelectItem>
                       );
