@@ -24,7 +24,7 @@ const Navigation = () => {
       return result;
     };
     retrieveUser();
-  }, []);
+  }, [supabase.auth]);
 
   const signOut = () => {
     supabase.auth.signOut().then(() => setUser(null));
