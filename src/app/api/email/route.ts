@@ -15,7 +15,6 @@ type Props = {
 
 export const GET = async () => {
   const res = await emails();
-  console.log("nice", res);
   return NextResponse.json({ message: res ?? [] }, { status: 200 });
 };
 
@@ -36,7 +35,6 @@ export const PUT = async (req: NextRequest) => {
     scheduled_date: data.scheduled,
   } as Email;
   const result = await createEmail(email);
-  console.log(result);
   data.recipients.forEach(async (recp) => await addRecipient(result, recp));
   return NextResponse.json(
     { message: "Email created.", id: result },

@@ -1,9 +1,13 @@
+import { sendEmail } from "@/utils/email";
 import {
   Status,
+  addRecipient,
   emails,
   removeEmail,
   updateEmail,
 } from "@/utils/supabase/repository/emailRepository";
+import { templates } from "@/utils/supabase/repository/templateRepository";
+import { createClient } from "@/utils/supabase/server";
 import { UUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,10 +18,12 @@ type Params = {
 };
 
 type Props = {
+  recipients: string[];
   subject: string;
   status: Status;
   scheduled: number;
   templateId: string;
+  sendNow: boolean;
 };
 
 export const GET = async (req: NextRequest, { params }: Params) => {
@@ -46,6 +52,20 @@ export const POST = async (req: NextRequest, { params }: Params) => {
       },
       { status: 400 },
     );
+  }
+  await (await createClient())
+    .from("recipients")
+    .delete()
+    .eq("emailId", params.id);
+  data.recipients.forEach(async (rec) => await addRecipient(params.id, rec));
+  if (data.sendNow) {
+    const template = (await templates())?.filter(
+      (template) => template.id === data.templateId,
+    )[0];
+    const recipients = Array.from(new Set(data.recipients));
+    if (recipients && recipients.length > 0) {
+      await sendEmail(data.subject, template.body, recipients);
+    }
   }
   await updateEmail(params.id, {
     subject: data.subject,
