@@ -37,8 +37,8 @@ type Template = {
 };
 
 type GroupedTemplate = {
-  [key: string]: Template[]
-}
+  [key: string]: Template[];
+};
 
 const Form = () => {
   const [email, setEmail] = useState({
@@ -48,7 +48,9 @@ const Form = () => {
     templateId: "",
   });
   const [templates, setTemplates] = useState<GroupedTemplate>({});
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
+  const [selectedTemplate, setSelectedTemplate] = useState<
+    Template | undefined
+  >(undefined);
   const [error, setError] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [popup, setPopup] = useState({
@@ -89,16 +91,19 @@ const Form = () => {
           })
           .then((data) => {
             setTemplates(
-              data.message.reduce((grouped: Record<Team, Template[]>, item: Template) => {
-                const team = item.team;
-                // If the team doesn't exist yet, create an empty array for it
-                if (!grouped[team]) {
-                  grouped[team] = [];
-                }
-                // Add the current item to the correct team group
-                grouped[team].push(item);
-                return grouped;
-              }, {}),
+              data.message.reduce(
+                (grouped: Record<Team, Template[]>, item: Template) => {
+                  const team = item.team;
+                  // If the team doesn't exist yet, create an empty array for it
+                  if (!grouped[team]) {
+                    grouped[team] = [];
+                  }
+                  // Add the current item to the correct team group
+                  grouped[team].push(item);
+                  return grouped;
+                },
+                {},
+              ),
             );
             for (const x of data.message) {
               if (
@@ -216,7 +221,9 @@ const Form = () => {
           }
           placeholder="Enter subject"
         />
-        <Select onValueChange={(value) => setSelectedTemplate(JSON.parse(value))}>
+        <Select
+          onValueChange={(value) => setSelectedTemplate(JSON.parse(value))}
+        >
           <SelectTrigger>
             <SelectValue
               placeholder={
