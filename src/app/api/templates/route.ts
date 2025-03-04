@@ -39,15 +39,14 @@ export const POST = async (req: NextRequest) => {
   );
 };
 
-export const DELETE = async (req: NextRequest) => {
-  const body = await req.json();
-  console.log(body);
-  return NextResponse.json(
-    // {
-    //   message: (await removeTemplate(body))
-    //     ? "Email does not exist."
-    //     : "Email was deleted.",
-    // },
-    { status: 200 },
-  );
-};
+// export const DELETE = async (req: NextRequest) => {
+//   const body = await req.json();
+//   return NextResponse.json(
+//     // {
+//     //   message: (await removeTemplate(body))
+//     //     ? "Email does not exist."
+//     //     : "Email was deleted.",
+//     // },
+//     { status: 200 },
+//   );
+// };

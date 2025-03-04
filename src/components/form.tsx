@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { KeyboardEvent } from "react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
-import { Loader, Send, Save, Clock, Trash, ChevronDown } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Loader, Send, Save, Clock, Trash, ChevronDown, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import {
@@ -26,6 +26,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Label } from "./ui/label";
+import QuickDialog from "./quick-dialog";
+import { UUID } from "crypto";
 
 type Team = "operations" | "sponsorship";
 
@@ -36,33 +38,43 @@ type Template = {
   team: Team;
 };
 
+type Email = {
+  recipients: string[];
+  subject: string;
+  body: string;
+  templateId: string;
+  scheduledDate: number;
+};
+
 type GroupedTemplate = {
   [key: string]: Template[];
 };
 
+type Recipient = {
+  email_id: UUID;
+  user_email: string;
+};
+
 const Form = () => {
-  const [email, setEmail] = useState({
-    recipients: "",
+  const router = useRouter();
+  const [email, setEmail] = useState<Email>({
+    recipients: [],
     subject: "",
     body: "",
     templateId: "",
+    scheduledDate: 0,
   });
+  const [scheduledDate, setScheduledDate] = useState(0);
+  const [scheduleShow, setShowSchedule] = useState(false);
+  const [dlConfirmShow, setDeleteConfirmShow] = useState(false);
   const [templates, setTemplates] = useState<GroupedTemplate>({});
   const [selectedTemplate, setSelectedTemplate] = useState<
     Template | undefined
   >(undefined);
+  const [recipientInput, setRecipientInput] = useState("");
   const [error, setError] = useState(false);
   const [loading, setIsLoading] = useState(false);
-  const [popup, setPopup] = useState({
-    title: "",
-    text: "",
-    color: "",
-    visible: false,
-    onClick: () => {},
-    button: "",
-  });
-  console.log(popup);
-  console.log(email);
+  const [fetchingEmail, setFetchingEmail] = useState(true);
   const pathname = usePathname();
   const id = pathname.split("/")[3];
   useEffect(() => {
@@ -77,10 +89,17 @@ const Form = () => {
       })
       .then((diddy) => {
         setEmail({
-          recipients: diddy.message[0].recipients.join(", "),
+          recipients: Array.from(
+            new Set(
+              diddy.message[0].recipients.map(
+                (recipient: Recipient) => recipient.user_email,
+              ),
+            ),
+          ) as string[],
           subject: diddy.message[0].subject,
           templateId: diddy.message[0].templateId,
           body: "this is a body",
+          scheduledDate: diddy.message[0].scheduled_date,
         });
         fetch("/api/templates")
           .then((res) => {
@@ -90,6 +109,7 @@ const Form = () => {
             return res.json();
           })
           .then((data) => {
+            setFetchingEmail(false);
             setTemplates(
               data.message.reduce(
                 (grouped: Record<Team, Template[]>, item: Template) => {
@@ -144,7 +164,8 @@ const Form = () => {
           ...email,
           status,
           templateId: selectedTemplate?.id ?? null,
-          scheduled: status === "scheduled" ? Date.now() : 0, // Add scheduled date if needed
+          scheduled: scheduledDate, // Add scheduled date if needed
+          sendNow: status === "sent",
         }),
       });
 
@@ -159,6 +180,7 @@ const Form = () => {
             ? "Email scheduled successfully!"
             : "Email sent successfully!",
       );
+      if (status === "scheduled") setShowSchedule(false);
     } catch (error) {
       console.error("Error saving document:", error);
       setError(true);
@@ -169,9 +191,8 @@ const Form = () => {
   };
 
   const deleteEmail = () => {
-    fetch("/api/email", {
+    fetch(`/api/email/${id}`, {
       method: "DELETE",
-      body: JSON.stringify(id),
     })
       .then((res) => {
         if (!res.ok) {
@@ -181,39 +202,120 @@ const Form = () => {
       .then((data) => {
         console.log(data);
         toast.success("Deleted successfully");
+        setDeleteConfirmShow(false);
+        setTimeout(() => router.push("/user/emails"), 1000);
       })
       .catch((error) => {
         console.error("Error creating newsletters:", error);
       });
   };
 
-  const confirmDelete = () => {
-    setPopup({
-      title: "Delete Confirmation",
-      text: "Are you sure you want to delete this newsletter This action is irreversible.",
-      color: "red",
-      visible: true,
-      onClick: deleteEmail,
-      button: "Confirm",
-    });
+  const convertDate = (epoch: number) => {
+    const date = new Date(epoch);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return date;
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (
+      (e.key === "Enter" || e.key === "Space") &&
+      recipientInput.trim() !== ""
+    ) {
+      setEmail((prev) => {
+        const recipients = [...prev.recipients, recipientInput.trim()];
+        return { ...prev, recipients: recipients };
+      });
+      setRecipientInput("");
+      e.preventDefault();
+    }
+    if (e.key === "Backspace" && recipientInput === "") {
+      setEmail((prev) => {
+        const recipients = prev.recipients.slice(0, prev.recipients.length - 1);
+        return { ...prev, recipients: recipients };
+      });
+    }
   };
 
   if (error) {
     <div>uh oh</div>;
   }
 
-  console.log(templates);
+  if (fetchingEmail) {
+    return (
+      <div className="flex flex-col justify-center items-center h-full gap-y-4">
+        <h1 className="font-bold text-lg">Loading email...</h1>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-6 bg-white shadow rounded-lg">
+      <QuickDialog
+        show={dlConfirmShow}
+        setShow={setDeleteConfirmShow}
+        title="Email Deletion Confirmation"
+        description="Clicking 'yes' will permanently delete this email!"
+        width="600px"
+        showClose={false}
+      >
+        <div className="flex w-full gap-x-4 mt-12">
+          <Button
+            onClick={deleteEmail}
+            variant={"destructive"}
+            className="w-1/2"
+          >
+            Yes
+          </Button>
+          <Button onClick={() => setDeleteConfirmShow(false)} className="w-1/2">
+            No
+          </Button>
+        </div>
+      </QuickDialog>
+      <QuickDialog
+        show={scheduleShow}
+        setShow={setShowSchedule}
+        title="Scheduled Date"
+        width="600px"
+      >
+        <Label className="font-bold">date & time</Label>
+        <Input
+          type="datetime-local"
+          defaultValue={convertDate(
+            scheduledDate === 0 ? email.scheduledDate : scheduledDate,
+          )
+            .toISOString()
+            .slice(0, 16)}
+          onChange={(event) =>
+            setScheduledDate(
+              new Date(event.currentTarget.value).getTime() ?? Date.now(),
+            )
+          }
+        />
+
+        <Button onClick={() => handleSubmit("scheduled")}>Schedule</Button>
+      </QuickDialog>
       <h2 className="text-2xl font-semibold text-gray-800">Email Editor</h2>
       <div className="flex flex-col gap-y-4 mt-4">
-        <Input
-          value={email.recipients}
-          onChange={(e) =>
-            setEmail((prev) => ({ ...prev, recipients: e.target.value }))
-          }
-          placeholder="Email Address"
-        />
+        <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded focus-within:border-blue-500 overflow-auto">
+          <ul className="flex text-xs gap-x-1">
+            {email.recipients.map((email, index) => (
+              <li
+                key={index}
+                className="px-2 py-1 bg-blue-300 text-white rounded-md flex items-center gap-x-1"
+              >
+                {email} <X size={20} />
+              </li>
+            ))}
+          </ul>
+          <input
+            type="email"
+            value={recipientInput}
+            onChange={(e) => setRecipientInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter email"
+            className="flex-grow p-1 text-sm border-none focus:ring-0 focus:outline-none"
+          />
+        </div>
         <Input
           value={email.subject}
           onChange={(e) =>
@@ -276,7 +378,7 @@ const Form = () => {
 
       <div className="flex mt-6">
         <Button
-          className="flex items-center gap-2 bg-black hover:opactiy-80 text-white px-4 py-2 rounded-l-md"
+          className="flex items-center gap-2 bg-black hover:opactiy-80 text-white px-4 py-2 rounded-l-md rounded-r-none"
           onClick={() => handleSubmit("sent")}
           disabled={loading}
         >
@@ -304,7 +406,7 @@ const Form = () => {
 
             <DropdownMenuItem
               className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleSubmit("scheduled")}
+              onClick={() => setShowSchedule(true)}
               disabled={loading}
             >
               <Clock className="w-4 h-4 text-gray-600" />
@@ -315,7 +417,7 @@ const Form = () => {
 
             <DropdownMenuItem
               className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 text-red-600"
-              onClick={confirmDelete}
+              onClick={() => setDeleteConfirmShow(true)}
               disabled={loading}
             >
               <Trash className="w-4 h-4" />
