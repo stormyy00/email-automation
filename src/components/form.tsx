@@ -245,7 +245,10 @@ const Form = () => {
                     </SelectLabel>
                     {templates[team].map((template, templateIndex) => {
                       return (
-                        <SelectItem key={`template-${templateIndex}`} value={JSON.stringify(template)}>
+                        <SelectItem
+                          key={`template-${templateIndex}`}
+                          value={JSON.stringify(template)}
+                        >
                           {template.name}
                         </SelectItem>
                       );
