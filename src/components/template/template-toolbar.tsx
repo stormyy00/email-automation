@@ -44,6 +44,8 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
     team: "",
   });
 
+  console.log(template);
+
   const ids = Object.keys(checked).filter((id) => checked[id]);
 
   const handleTemplates = (
@@ -51,6 +53,10 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
     key: string,
   ) => {
     setTemplate({ ...template, [key]: e.target.value });
+  };
+
+  const handleSelectChange = (value: string, key: string) => {
+    setTemplate({ ...template, [key]: value });
   };
 
   const handleConfigure = () => {
@@ -178,12 +184,13 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
                 {question.type === "select" && (
                   <Select
                     options={[
-                      { label: "Sponsorship", value: "sponsorship" },
-                      { label: "Operations", value: "operations" },
+                      { label: "sponsorship", value: "sponsorship" },
+                      { label: "operations", value: "operations" },
                     ]}
-                    onChange={(selected) =>
-                      console.log("Selected category:", selected)
-                    }
+                    onChange={(e) => {
+                      handleSelectChange(e, question.title);
+                      console.log(e);
+                    }}
                     placeholder="Select a Team"
                   />
                 )}
