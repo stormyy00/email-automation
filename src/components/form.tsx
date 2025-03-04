@@ -215,34 +215,32 @@ const Form = () => {
             />
           </SelectTrigger>
           <SelectContent>
-            {/* <SelectGroup> */}
             {Object.keys(templates)
               .filter((team) => team !== "")
-              .map((team, key) => {
-                return (
-                  <SelectGroup key={key}>
-                    <SelectLabel key={key}>
-                      {team[0].toUpperCase() + team.substring(1)}
-                    </SelectLabel>
-                    {templates[team].map((template, key1) => {
-                      return (
-                        <SelectItem key={key1} value={template}>
-                          {template.name}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectGroup>
-                );
-              })}
+              .map((team, index) => (
+                <SelectGroup key={`team-${index}`}>
+                  <SelectLabel>
+                    {team[0].toUpperCase() + team.substring(1)}
+                  </SelectLabel>
+                  {templates[team].map((template, templateIndex) => (
+                    <SelectItem
+                      key={`template-${templateIndex}`}
+                      value={template}
+                    >
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              ))}
           </SelectContent>
         </Select>
         {selectedTemplate && (
           <>
-            <Label className="font-bold">preview text</Label>
+            <Label className="font-bold">Preview Text</Label>
             <Textarea
               value={selectedTemplate.body}
               className="h-48 text-gray-500"
-              contentEditable={false}
+              readOnly
             />
           </>
         )}

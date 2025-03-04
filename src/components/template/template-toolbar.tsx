@@ -184,8 +184,8 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
                 {question.type === "select" && (
                   <Select
                     options={[
-                      { label: "Sponsorship", value: "sponsorship" },
-                      { label: "Operations", value: "operations" },
+                      { label: "sponsorship", value: "sponsorship" },
+                      { label: "operations", value: "operations" },
                     ]}
                     onChange={(e) => {
                       handleSelectChange(e, question.title);
