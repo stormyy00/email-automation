@@ -5,7 +5,7 @@ export const QUESTIONS = [
   },
   {
     title: "body",
-    type: "input",
+    type: "textarea",
   },
   {
     title: "type",

@@ -5,7 +5,7 @@ export const STATUSES = [
   },
   {
     status: "draft",
-    color: "bg-amber-500 hover:bg-amber-500",
+    color: "bg-green-500 hover:bg-green-500",
   },
   {
     status: "scheduled",
