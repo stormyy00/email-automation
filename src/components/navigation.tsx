@@ -6,8 +6,9 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-
+import { createClient } from "@/utils/supabase/client";
 import { TABS } from "@/data/navigation";
+import { Circle } from "lucide-react";
 import Link from "next/link";
 // import Logo from "@/public/temporarylogo.png";
 import { usePathname, useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ const Navigation = () => {
   const path = usePathname();
   const router = useRouter();
   const NAVTABS = TABS[path.split("/")[1]].tabs;
+  const supabase = createClient();
 
   return (
     <Sidebar className="text-white">
@@ -37,7 +39,17 @@ const Navigation = () => {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter>Profile</SidebarFooter>
+      <SidebarFooter>
+        <Link className="flex justify-center" href={"/user/profile"}>
+          <Circle size={42} />
+        </Link>
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="px-4 py-2 bg-gradient-to-br from-orange-300 to-orange-700 text-white font-semibold rounded-xl shadow-md hover:opacity-80 transition-transform duration-300"
+        >
+          Sign Out
+        </button>
+      </SidebarFooter>
     </Sidebar>
   );
 };

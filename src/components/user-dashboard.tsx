@@ -27,7 +27,7 @@ const UserDashboard = () => {
       if (error) {
         console.error("Error fetching user:", error.message);
       } else {
-        setUser(data?.user.user_metadata);
+        setUser(data?.user);
       }
     };
 
@@ -50,7 +50,9 @@ const UserDashboard = () => {
             <div>
               <p className="text-3xl font-bold text-gray-800 ">
                 {greeting},{" "}
-                <span className="text-orange-600">{user?.full_name}</span>
+                <span className="text-orange-600">
+                  {user?.user_metadata.full_name}
+                </span>
               </p>
               <p className="text-gray-500  mt-1">
                 {new Date().toLocaleDateString("en-US", {
