@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { createClient } from "@/utils/supabase/client";
 import { TABS } from "@/data/navigation";
-import { Circle } from "lucide-react";
+import { EarthIcon, Settings, User } from "lucide-react";
 import Link from "next/link";
 // import Logo from "@/public/temporarylogo.png";
 import { usePathname, useRouter } from "next/navigation";
@@ -40,9 +40,17 @@ const Navigation = () => {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <Link className="flex justify-center" href={"/user/profile"}>
-          <Circle size={42} />
-        </Link>
+        <div className="flex justify-between mx-4">
+          <Link className="flex justify-center" href={"/"}>
+            <EarthIcon size={36} className="hover:scale-110 duration-300" />
+          </Link>
+          <Link className="flex justify-center" href={"/user/profile"}>
+            <User size={36} className="hover:scale-110 duration-300" />
+          </Link>
+          <Link className="flex justify-center" href={"/user/settings"}>
+            <Settings size={36} className="hover:scale-110 duration-300" />
+          </Link>
+        </div>
         <button
           onClick={() => supabase.auth.signOut()}
           className="px-4 py-2 bg-gradient-to-br from-orange-300 to-orange-700 text-white font-semibold rounded-xl shadow-md hover:opacity-80 transition-transform duration-300"

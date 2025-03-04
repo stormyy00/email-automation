@@ -27,10 +27,10 @@ interface props {
   setChecked: (value: { [key: string]: boolean }) => void;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setNewsletters: (value: any[] | ((prev: any[]) => any[])) => void;
+  setEmails: (value: any[] | ((prev: any[]) => any[])) => void;
 }
 
-const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
+const Toolbar = ({ data, setSearch, checked, setEmails }: props) => {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [popup, setPopup] = useState({
@@ -43,7 +43,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
   });
 
   const ids = Object.keys(checked).filter((id) => checked[id]);
-
+  console.log(ids);
   const handleStatus = async (newStatus: string) => {
     await fetch("/api/newsletter", {
       method: "PUT",
@@ -52,7 +52,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
         newStatus: newStatus,
       }),
     });
-    setNewsletters((prev) => {
+    setEmails((prev) => {
       const updated = prev.map((item) =>
         checked[item.id] ? { ...item, status: newStatus } : item,
       );
@@ -90,8 +90,7 @@ const Toolbar = ({ data, setSearch, checked, setNewsletters }: props) => {
   const deleteNewsletter = () => {
     const keep = data.filter((item) => !ids.includes(item.newsletterId));
     console.log("keep", keep);
-    setSearch(keep);
-    setNewsletters(keep);
+    setEmails(keep);
     fetch("/api/email", {
       method: "DELETE",
       body: JSON.stringify(ids),

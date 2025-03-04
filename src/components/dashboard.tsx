@@ -70,7 +70,7 @@ const Dashboard = ({ title }: { title: string }) => {
         setSearch={setSearch}
         checked={checked}
         setChecked={setChecked}
-        setNewsletters={setEmails}
+        setEmails={setEmails}
       />
       {!loading ? (
         <div className="flex flex-col gap-2">

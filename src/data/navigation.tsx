@@ -1,4 +1,11 @@
-import { Users, Users2, User, Building2 } from "lucide-react";
+import {
+  Home,
+  Mail,
+  Clock10,
+  BookCheck,
+  Globe2,
+  ChartArea,
+} from "lucide-react";
 interface Tab {
   name: string;
   link: string;
@@ -19,14 +26,14 @@ export const TABS: Tabs = {
     tabs: [
       //TODO: Needs to be updated
       {
-        name: "Organizations",
-        link: "/admin/orgs",
-        icon: <Building2 />,
+        name: "Overview",
+        link: "/admin/",
+        icon: <Globe2 />,
       },
       {
-        name: "Users",
-        link: "/admin/users",
-        icon: <Users />,
+        name: "Statistics",
+        link: "/admin/statistics",
+        icon: <ChartArea />,
       },
     ],
   },
@@ -36,23 +43,23 @@ export const TABS: Tabs = {
       {
         name: "Home",
         link: "/user",
-        icon: <User />,
+        icon: <Home />,
       },
       {
         name: "Emails",
         link: "/user/emails",
-        icon: <User />,
+        icon: <Mail />,
       },
       {
         name: "Templates",
         link: "/user/templates",
-        icon: <Users2 />,
+        icon: <BookCheck />,
         requiresOrg: true,
       },
       {
         name: "History",
         link: "/user/history",
-        icon: <Users2 />,
+        icon: <Clock10 />,
         requiresOrg: true,
       },
     ],

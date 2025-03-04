@@ -244,7 +244,7 @@ const Form = () => {
     return (
       <div className="flex flex-col justify-center items-center h-full gap-y-4">
         <h1 className="font-bold text-lg">Loading email...</h1>
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-orange-500"></div>
       </div>
     );
   }

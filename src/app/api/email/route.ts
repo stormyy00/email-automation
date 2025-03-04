@@ -3,6 +3,7 @@ import {
   addRecipient,
   createEmail,
   emails,
+  removeEmail,
 } from "@/utils/supabase/repository/emailRepository";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,4 +41,20 @@ export const PUT = async (req: NextRequest) => {
     { message: "Email created.", id: result },
     { status: 200 },
   );
+};
+
+export const DELETE = async (req: NextRequest) => {
+  const ids = await req.json();
+
+  const idList = Array.isArray(ids) ? ids : [ids];
+  const results = await Promise.all(
+    idList.map(async (id) => ({
+      id,
+      status: (await removeEmail(id))
+        ? "Email does not exist."
+        : "Email was deleted.",
+    })),
+  );
+
+  return NextResponse.json({ message: results }, { status: 200 });
 };

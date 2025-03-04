@@ -39,8 +39,7 @@ export const GET = async () => {
       }
     }
     return NextResponse.json({ message: result }, { status: 200 });
-
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    return NextResponse.json({ error: e }, { status: 400 });
   }
 };
