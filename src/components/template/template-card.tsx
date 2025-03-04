@@ -10,6 +10,9 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   operations: { bg: "bg-amber-50", text: "text-amber-600" },
@@ -121,10 +124,10 @@ const TemplateCard = ({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <Label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   value={editedDescription}
                   onChange={(e) => setEditedDescription(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -133,7 +136,7 @@ const TemplateCard = ({
                 />
               </div>
               <div className="flex justify-end gap-2">
-                <button
+                <Button
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsEditing(false);
@@ -143,14 +146,14 @@ const TemplateCard = ({
                   className="px-3 py-1 bg-gray-100 rounded text-gray-600 hover:bg-gray-200 text-sm font-medium"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleSave}
                   className="px-3 py-1 bg-blue-600 rounded text-white hover:bg-blue-700 text-sm font-medium flex items-center gap-1"
                 >
                   <Save size={16} />
                   Save
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

@@ -11,8 +11,10 @@ import {
 import React from "react";
 import Tile from "./tile";
 import QuickAcess from "./quick-acess";
+import { useRouter } from "next/navigation";
 
 const UserDashboard = () => {
+  const router = useRouter();
   const [greeting, setGreeting] = useState("Good Day");
   useEffect(() => {
     // Get the current time and set greeting
@@ -48,11 +50,13 @@ const UserDashboard = () => {
                 text={"Compose Email"}
                 icon={<PlusCircle />}
                 className={"bg-orange-600 text-white hover:bg-orange-700"}
+                onClick={() => router.push("user/emails")}
               />
               <QuickAcess
                 text={"Settings"}
                 icon={<Settings />}
                 className={"bg-gray-100 text-gray-700 hover:bg-gray-200"}
+                onClick={() => router.push("user/settings")}
               />
             </div>
           </div>

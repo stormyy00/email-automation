@@ -19,6 +19,7 @@ import { TYPES } from "@/data/status";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { TemplateType } from "@/types";
+import { Textarea } from "../ui/textarea";
 interface props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setSearch: (value: any[]) => void;
@@ -45,7 +46,10 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
 
   const ids = Object.keys(checked).filter((id) => checked[id]);
 
-  const handleTemplates = (e: ChangeEvent<HTMLInputElement>, key: string) => {
+  const handleTemplates = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: string,
+  ) => {
     setTemplate({ ...template, [key]: e.target.value });
   };
 
@@ -161,6 +165,12 @@ const TemplateToolbar = ({ data, setSearch, checked, setTemplates }: props) => {
                 {question.type === "input" && (
                   <Input
                     type="text"
+                    value={template[question.title as keyof TemplateType]}
+                    onChange={(e) => handleTemplates(e, question.title)}
+                  />
+                )}
+                {question.type === "textarea" && (
+                  <Textarea
                     value={template[question.title as keyof TemplateType]}
                     onChange={(e) => handleTemplates(e, question.title)}
                   />
