@@ -20,7 +20,7 @@ export const createEmail = async (email: Email): Promise<UUID> => {
         status: email.status,
         subject: email.subject,
         scheduled_date: email.scheduled_date,
-        templateId: "",
+        templateId: null,
       })
       .select()
   ).data?.at(0).id;
