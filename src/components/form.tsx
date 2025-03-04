@@ -5,7 +5,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
-import { ChevronDown, Loader } from "lucide-react";
+import { Loader, Send, Save, Clock, Trash, ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 
@@ -248,52 +248,56 @@ const Form = () => {
         )}
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center justify-end w-fit mt-4 px-4 py-2 bg-black text-white text-lg font-medium rounded-lg transition hover:bg-black/70">
-          Select Action
-          <ChevronDown className="w-5 h-5" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full mt-2 rounded-lg bg-white shadow-lg border">
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Button
-              className="w-full text-left py-2 px-4 hover:opacity-90"
-              onClick={() => handleSubmit("sent")}
-              disabled={loading}
-            >
-              {loading ? <Loader className="animate-spin" /> : "Submit"}
-            </Button>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Button
-              className="w-full text-left py-2 px-4 hover:opacity-90"
+      <div className="flex mt-6">
+        <Button
+          className="flex items-center gap-2 bg-black hover:opactiy-80 text-white px-4 py-2 rounded-l-md"
+          onClick={() => handleSubmit("sent")}
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader className="animate-spin w-4 h-4" />
+          ) : (
+            <Send className="w-4 h-4" />
+          )}
+          <span>Send</span>
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger className="px-3 py-2 bg-black hover:opacity-80 text-white rounded-r-md border-l border-black">
+            <ChevronDown className="w-4 h-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48 mt-2 rounded-md bg-white shadow-lg border">
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => handleSubmit("draft")}
               disabled={loading}
             >
-              {loading ? <Loader className="animate-spin" /> : "Save as Draft"}
-            </Button>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Button
-              className="w-full text-left py-2 px-4 hover:opacity-90"
+              <Save className="w-4 h-4 text-gray-600" />
+              <span>Save as Draft</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
               onClick={() => handleSubmit("scheduled")}
               disabled={loading}
             >
-              {loading ? <Loader className="animate-spin" /> : "Schedule"}
-            </Button>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Button
-              className="w-full text-left py-2 px-4 text-red-600 hover:bg-red-50"
+              <Clock className="w-4 h-4 text-gray-600" />
+              <span>Schedule</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 text-red-600"
               onClick={confirmDelete}
               disabled={loading}
             >
-              {loading ? <Loader className="animate-spin" /> : "Delete"}
-            </Button>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <Trash className="w-4 h-4" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 };
