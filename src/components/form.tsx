@@ -263,8 +263,12 @@ const Form = () => {
             <Label className="font-bold">Preview Text</Label>
             <Textarea
               value={selectedTemplate.body}
+              onChange={(e) =>
+                setSelectedTemplate((prev) =>
+                  prev ? { ...prev, body: e.target.value } : undefined,
+                )
+              }
               className="h-48 text-gray-500"
-              readOnly
             />
           </>
         )}
