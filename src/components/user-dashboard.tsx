@@ -12,12 +12,26 @@ import React from "react";
 import Tile from "./tile";
 import QuickAcess from "./quick-acess";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { UserMetadata } from "@supabase/supabase-js";
 
 const UserDashboard = () => {
   const router = useRouter();
+  const supabase = createClient();
   const [greeting, setGreeting] = useState("Good Day");
+  const [user, setUser] = useState<UserMetadata | null>(null);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error.message);
+      } else {
+        setUser(data?.user.user_metadata);
+      }
+    };
+
+    fetchUser();
     const hours = new Date().getHours();
     if (hours < 12) {
       setGreeting("Good Morning");
@@ -26,7 +40,8 @@ const UserDashboard = () => {
     } else {
       setGreeting("Good Evening");
     }
-  }, []);
+  }, [supabase.auth]);
+
   return (
     <div className="w-full min-h-screen bg-gray-50 ">
       <div className="max-w-7xl mx-auto space-y-8 p-6">
@@ -34,7 +49,8 @@ const UserDashboard = () => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-3xl font-bold text-gray-800 ">
-                {greeting}, <span className="text-orange-600">Jonathan</span>
+                {greeting},{" "}
+                <span className="text-orange-600">{user?.full_name}</span>
               </p>
               <p className="text-gray-500  mt-1">
                 {new Date().toLocaleDateString("en-US", {
