@@ -9,7 +9,6 @@ export async function middleware(request: NextRequest) {
   const protectedRoutes = ["/user", "/admin"];
   const publicRoutes = ["/auth", "/"];
 
-  // Check if the requested route is protected
   if (
     protectedRoutes.some((route) => path.startsWith(route)) &&
     publicRoutes.some((route) => path.startsWith(route))
