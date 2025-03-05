@@ -88,8 +88,9 @@ const Toolbar = ({ data, setSearch, checked, setEmails }: props) => {
   };
 
   const deleteNewsletter = () => {
-    const keep = data.filter((item) => !ids.includes(item.newsletterId));
+    const keep = data.filter((item) => !ids.includes(item.id));
     console.log("keep", keep);
+    setSearch(keep);
     setEmails(keep);
     fetch("/api/email", {
       method: "DELETE",

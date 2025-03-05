@@ -2,43 +2,28 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "./utils/supabase/server";
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = await createClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  const supabase = createClient();
 
   const protectedRoutes = ["/user", "/admin"];
-
   const publicRoutes = ["/auth", "/"];
 
-  const path = req.nextUrl.pathname;
+  // Check if the requested route is protected
+  if (
+    protectedRoutes.some((route) => path.startsWith(route)) &&
+    publicRoutes.some((route) => path.startsWith(route))
+  ) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-  if (protectedRoutes.some((route) => path.startsWith(route)) && !session) {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${req.nextUrl.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      console.error("OAuth Redirect Error:", error);
-      return NextResponse.redirect(new URL("/error", req.url));
-    }
-
-    if (data.url) {
-      return NextResponse.redirect(data.url);
+    if (!session) {
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
-  if (publicRoutes.includes(path) && session) {
-    return NextResponse.redirect(new URL("/user", req.url));
-  }
-
-  if (path.startsWith("/admin")) {
+  if (path.startsWith("/admins")) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -46,11 +31,12 @@ export async function middleware(req: NextRequest) {
     const isAdmin = user?.user_metadata?.role === "admin";
 
     if (!isAdmin) {
-      return NextResponse.redirect(new URL("/unauthorized", req.url));
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
   }
 
-  return res;
+  // Proceed with the request if no issues
+  return NextResponse.next();
 }
 
 export const config = {

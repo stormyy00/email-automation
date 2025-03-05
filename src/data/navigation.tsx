@@ -27,7 +27,7 @@ export const TABS: Tabs = {
       //TODO: Needs to be updated
       {
         name: "Overview",
-        link: "/admin/",
+        link: "/admin",
         icon: <Globe2 />,
       },
       {

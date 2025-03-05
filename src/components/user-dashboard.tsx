@@ -12,26 +12,13 @@ import React from "react";
 import Tile from "./tile";
 import QuickAcess from "./quick-acess";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 import { UserMetadata } from "@supabase/supabase-js";
 
-const UserDashboard = () => {
+const UserDashboard = ({ user }: { user: UserMetadata | null }) => {
   const router = useRouter();
-  const supabase = createClient();
   const [greeting, setGreeting] = useState("Good Day");
-  const [user, setUser] = useState<UserMetadata | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error("Error fetching user:", error.message);
-      } else {
-        setUser(data?.user);
-      }
-    };
-
-    fetchUser();
     const hours = new Date().getHours();
     if (hours < 12) {
       setGreeting("Good Morning");
@@ -40,7 +27,7 @@ const UserDashboard = () => {
     } else {
       setGreeting("Good Evening");
     }
-  }, [supabase.auth]);
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-gray-50 ">

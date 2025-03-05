@@ -43,35 +43,55 @@ export const DELETE = async (req: NextRequest, { params }: Params) => {
 };
 
 export const POST = async (req: NextRequest, { params }: Params) => {
-  const data = (await req.json().catch(() => undefined)) as Props | undefined;
-  if (!data) {
+  try {
+    const data = (await req.json().catch(() => undefined)) as Props | undefined;
+    if (!data) {
+      return NextResponse.json(
+        {
+          message:
+            "Please provide the email's subject, body, status, and scheduled date.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const supabase = await createClient();
+    await supabase.from("recipients").delete().eq("emailId", params.id);
+    await Promise.all(
+      data.recipients.map((rec) => addRecipient(params.id, rec)),
+    );
+    const template = (await templates())?.find((t) => t.id === data.templateId);
+    if (!template) {
+      return NextResponse.json(
+        { message: "Template not found." },
+        { status: 404 },
+      );
+    }
+
+    if (data.sendNow) {
+      const recipients = Array.from(new Set(data.recipients));
+      if (recipients.length > 0) {
+        await sendEmail(data.subject, template.body, recipients);
+      }
+    }
+
+    // Update email record
+    await updateEmail(params.id, {
+      subject: data.subject,
+      status: data.status,
+      scheduled_date: data.scheduled,
+      templateId: data.templateId,
+    });
+
     return NextResponse.json(
-      {
-        message:
-          "Please provide the email's subject, body, status, and scheduled date.",
-      },
-      { status: 400 },
+      { message: "Email was updated." },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error updating email:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 },
     );
   }
-  await (await createClient())
-    .from("recipients")
-    .delete()
-    .eq("emailId", params.id);
-  data.recipients.forEach(async (rec) => await addRecipient(params.id, rec));
-  if (data.sendNow) {
-    const template = (await templates())?.filter(
-      (template) => template.id === data.templateId,
-    )[0];
-    const recipients = Array.from(new Set(data.recipients));
-    if (recipients && recipients.length > 0) {
-      await sendEmail(data.subject, template.body, recipients);
-    }
-  }
-  await updateEmail(params.id, {
-    subject: data.subject,
-    status: data.status,
-    scheduled_date: data.scheduled,
-    templateId: data.templateId,
-  });
-  return NextResponse.json({ message: "Email was updated." }, { status: 200 });
 };

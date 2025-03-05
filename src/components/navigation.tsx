@@ -12,6 +12,7 @@ import { EarthIcon, Settings, User } from "lucide-react";
 import Link from "next/link";
 // import Logo from "@/public/temporarylogo.png";
 import { usePathname, useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
 const Navigation = () => {
   const path = usePathname();
@@ -51,12 +52,15 @@ const Navigation = () => {
             <Settings size={36} className="hover:scale-110 duration-300" />
           </Link>
         </div>
-        <button
-          onClick={() => supabase.auth.signOut()}
+        <Button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            router.push("/");
+          }}
           className="px-4 py-2 bg-gradient-to-br from-orange-300 to-orange-700 text-white font-semibold rounded-xl shadow-md hover:opacity-80 transition-transform duration-300"
         >
           Sign Out
-        </button>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
