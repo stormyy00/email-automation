@@ -5,6 +5,7 @@ import {
   BookCheck,
   Globe2,
   ChartArea,
+  UsersIcon,
 } from "lucide-react";
 interface Tab {
   name: string;
@@ -60,6 +61,12 @@ export const TABS: Tabs = {
         name: "History",
         link: "/user/history",
         icon: <Clock10 />,
+        requiresOrg: true,
+      },
+      {
+        name: "Organizations",
+        link: "/user/organization",
+        icon: <UsersIcon />,
         requiresOrg: true,
       },
     ],
