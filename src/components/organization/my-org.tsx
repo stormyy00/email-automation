@@ -52,7 +52,7 @@ const MyOrg = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-6">My Organization</h1>
       {MOCKORG.map(({ organization, image, members }, index) => (
         <div key={index} className="flex flex-col items-center">
