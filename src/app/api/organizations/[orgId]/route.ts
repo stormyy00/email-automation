@@ -1,15 +1,13 @@
-import { NextResponse } from "next/server";
-import { UUID } from "crypto";
-type Params = {
-  params: {
-    orgId: UUID;
-  };
-};
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async ({ params }: Params) => {
-  const res = params.orgId;
+type params = {
+  params: { orgId: string };
+};
+export const GET = async (req: NextRequest, { params }: params) => {
+  const { orgId } = params;
+
   try {
-    return NextResponse.json({ message: res }, { status: 200 });
+    return NextResponse.json({ message: orgId }, { status: 200 });
   } catch (error) {
     console.error("failed to add org", error);
     return NextResponse.json(
