@@ -1,3 +1,5 @@
+import howard from "../../public/howard.jpeg";
+
 export const ITEMS = [
   {
     title: "Giving Guide 2024",
@@ -76,5 +78,30 @@ export const TEMPLATES = [
     templateSubject: "Baaa",
     templateBody: "AAaaa",
     type: "operations",
+  },
+];
+
+export const MOCKORG = [
+  {
+    organization: "CitrusHack",
+    image: howard,
+    members: [
+      {
+        name: " Howard Zhu",
+        email: "howard@gmail.com",
+      },
+      {
+        name: " Taaha Zhu",
+        email: "Taaha@gmail.com",
+      },
+      {
+        name: " Sean Zhu",
+        email: "Sean@gmail.com",
+      },
+      {
+        name: " Kavin Zhu",
+        email: "Kavin@gmail.com",
+      },
+    ],
   },
 ];
