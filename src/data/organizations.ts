@@ -3,14 +3,14 @@ export const orgConfigs = {
     title: "Join an Organization",
     description: "Ask your Org for a org id to join their Org.",
     labelText: "Org ID",
-    placeholder: "ie. abc123",
+    placeholder: "ie. f7j27vcak",
     buttonText: "Join Org",
   },
   create: {
     title: "Create an Organization",
     description: "Enter Org Name.",
     labelText: "Org Name",
-    placeholder: "ie. Cool Coders",
+    placeholder: "ie. Salesforce",
     buttonText: "Create Org Name",
   },
 };
