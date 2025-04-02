@@ -33,7 +33,6 @@ const Navigation = () => {
   console.log(!loaded, !user);
   return (
     <div className="flex justify-between items-center w-full sticky top-0 p-4 shadow-md z-50 bg-white/80 backdrop-blur-lg">
-      {/* Logo */}
       <Link href="/" className="text-2xl font-semibold text-black">
         Auto-Auto
       </Link>
